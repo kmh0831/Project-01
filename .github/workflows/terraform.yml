@@ -46,18 +46,11 @@ jobs:
       run: terraform init
       working-directory: ./prod
     
-    - name: Terraform Plan
-      run: terraform plan -input=false -out=tfplan -no-color
+    - name: Terraform Plan Destroy
+      run: terraform plan -destroy -out=tfdestroy -no-color
       working-directory: ./prod
-    
-    - name: Terraform Apply
-      id: apply
-      continue-on-error: true
-      run: terraform apply -input=false -auto-approve tfplan
+
+    - name: Terraform Destroy
+      if: github.ref == 'refs/heads/destroy' && github.event_name == 'push'
+      run: terraform destroy -auto-approve -input=false
       working-directory: ./prod
-    
-    - name: Terraform Destroy on Failure
-      if: ${{ failure() || steps.apply.outcome == 'failure' }}
-      run: terraform destroy -auto-approve 
-      working-directory: ./prod
-    
