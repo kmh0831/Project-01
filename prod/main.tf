@@ -32,7 +32,7 @@ module "webserver_cluster" {
 
 provider "helm" {
   kubernetes {
-    host                   = module.webserver_cluster.cluster_endpoint
+    host                   = module.webserver_cluster.eks_cluster_endpoint
     token                  = data.aws_eks_cluster_auth.cluster.token
     cluster_ca_certificate = base64decode(module.webserver_cluster.cluster_certificate_authority_data)
   }
