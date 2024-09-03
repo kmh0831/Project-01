@@ -334,7 +334,7 @@ module "eks" {
   cluster_version = var.cluster_version
 
   cluster_endpoint_private_access = true
-  cluster_endpoint_public_access  = true
+  cluster_endpoint_public_access  = false
 
   vpc_id          = aws_vpc.vpc.id
   subnet_ids      = [aws_subnet.public_subnet_a.id, aws_subnet.public_subnet_b.id]
@@ -342,10 +342,13 @@ module "eks" {
   eks_managed_node_group_defaults = {
     ami_type               = "AL2_x86_64"
     disk_size              = 10
-    instance_types         = ["${var.instance_type}"]
+    instance_types         = var.instance_type
     vpc_security_group_ids = []
-    iam_role_additional_policies = ["${var.iam_role_policy_prefix}/${var.iam_policy_autoscaling}"]
+    iam_role_additional_policies = {
+      "policy1" = "${var.iam_role_policy_prefix}/${var.iam_policy_autoscaling}"
+    }
   }
+
 
   eks_managed_node_groups = {
     ("${var.cluster_name}-node-group") = {

@@ -37,7 +37,7 @@ variable "private_subnet_b_cidr_block" {
 variable "cluster_name" {
   description = "The name of the EKS cluster."
   type        = string
-  default     = "Project-TEST"
+  default     = "TEST"
 }
 
 # EKS 클러스터 버전
