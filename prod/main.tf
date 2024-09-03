@@ -75,3 +75,4 @@ resource "helm_release" "cluster_autoscaler" {
     value = "10m"
   }
 }
+
