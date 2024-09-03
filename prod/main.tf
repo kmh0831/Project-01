@@ -9,8 +9,9 @@ module "webserver_cluster" {
   cluster_version        = var.cluster_version
   vpc_id                 = module.vpc.vpc_id            # VPC ID 전달
   subnet_ids             = module.vpc.private_subnet_ids # 서브넷 IDs 전달
-  account_id             = var.account_id
-  
+  # account_id는 변수 대신 직접 참조
+  account_id             = data.aws_caller_identity.current.account_id
+
   iam_role_policy_prefix = var.iam_role_policy_prefix
   iam_policy_autoscaling = var.iam_policy_autoscaling
   instance_sg_name       = var.instance_sg_name

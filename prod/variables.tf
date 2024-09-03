@@ -61,10 +61,5 @@ variable "alb_sg_name" {
   default     = "alb-sg"
 }
 
+# data 블록을 통해 현재 AWS 계정 ID를 가져옵니다.
 data "aws_caller_identity" "current" {}
-
-variable "account_id" {
-  description = "The AWS Account ID where the resources will be created."
-  type        = string
-  default     = data.aws_caller_identity.current.account_id
-}
