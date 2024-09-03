@@ -39,7 +39,7 @@ provider "helm" {
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.webserver_cluster.eks_cluster_id
+  name = module.webserver_cluster.eks_cluster_name
 }
 
 resource "helm_release" "cluster_autoscaler" {
