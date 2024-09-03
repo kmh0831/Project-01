@@ -32,3 +32,8 @@ output "eks_cluster_certificate_authority_data" {
   value       = module.eks.cluster_certificate_authority_data
   description = "The certificate authority data for the EKS cluster"
 }
+
+output "cluster_autoscaler_role_arn" {
+  value       = aws_iam_role.cluster_autoscaler.arn
+  description = "The ARN of the IAM role for the Cluster Autoscaler"
+}

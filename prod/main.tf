@@ -62,7 +62,7 @@ resource "helm_release" "cluster_autoscaler" {
 
   set {
     name  = "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = aws_iam_role.cluster_autoscaler.arn
+    value = module.webserver_cluster.cluster_autoscaler_role_arn
   }
 
   set {
