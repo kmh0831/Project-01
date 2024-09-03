@@ -188,6 +188,7 @@ data "template_file" "user_data" {
 # 인스턴스 보안 그룹
 resource "aws_security_group" "instance_sg" {
   name = var.instance_sg_name
+  vpc_id = aws_vpc.vpc.id
 }
 
 # HTTP 인바운드 규칙
@@ -291,6 +292,7 @@ resource "aws_lb_listener_rule" "asg" {
 # ALB 보안그룹
 resource "aws_security_group" "alb_sg" {
   name = var.alb_sg_name
+  vpc_id = aws_vpc.vpc.id
 }
 
 # HTTP 인바운드 규칙
