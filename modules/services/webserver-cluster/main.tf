@@ -187,7 +187,7 @@ data "template_file" "user_data" {
 
 # 인스턴스 보안 그룹
 resource "aws_security_group" "instance_sg" {
-  name = "${var.cluster_name}-instance"
+  name = var.instance_sg_name
 }
 
 # HTTP 인바운드 규칙
@@ -229,6 +229,10 @@ resource "aws_lb" "alb" {
   load_balancer_type = "application"
   subnets            = [aws_subnet.public_subnet_a.id, aws_subnet.public_subnet_b.id]
   security_groups    = [aws_security_group.alb.id]
+
+  tags = {
+    Name = "TEST-ALB"
+  }
 }
 
 # ALB 리스너
@@ -286,7 +290,7 @@ resource "aws_lb_listener_rule" "asg" {
 
 # ALB 보안그룹
 resource "aws_security_group" "alb_sg" {
-  name = "${var.cluster_name}-alb"
+  name = var.alb_sg_name
 }
 
 # HTTP 인바운드 규칙

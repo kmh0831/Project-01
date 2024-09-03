@@ -52,10 +52,19 @@ variable "iam_policy_autoscaling" {
 variable "instance_sg_name" {
   description = "The name of the security group for instances."
   type        = string
+  default     = "instance-sg"
 }
 
 variable "alb_sg_name" {
   description = "The name of the security group for the ALB."
   type        = string
+  default     = "alb-sg"
 }
 
+data "aws_caller_identity" "current" {}
+
+variable "account_id" {
+  description = "The AWS Account ID where the resources will be created."
+  type        = string
+  default     = data.aws_caller_identity.current.account_id
+}

@@ -7,13 +7,14 @@ module "webserver_cluster" {
   
   cluster_name           = var.cluster_name
   cluster_version        = var.cluster_version
-  vpc_id                 = var.vpc_id
-  subnet_ids             = var.subnet_ids
-
+  vpc_id                 = module.vpc.vpc_id            # VPC ID 전달
+  subnet_ids             = module.vpc.private_subnet_ids # 서브넷 IDs 전달
+  account_id             = var.account_id
+  
   iam_role_policy_prefix = var.iam_role_policy_prefix
   iam_policy_autoscaling = var.iam_policy_autoscaling
-  instance_sg_name       = "${var.cluster_name}-instance-sg"
-  alb_sg_name            = "${var.cluster_name}-alb-sg"
+  instance_sg_name       = var.instance_sg_name
+  alb_sg_name            = var.alb_sg_name
 }
 
 provider "helm" {

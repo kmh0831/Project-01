@@ -105,14 +105,14 @@ variable "ami_id" {
 variable "instance_sg_name" {
   description = "The name of the security group for instances."
   type        = string
-  # 기본값을 제거합니다.
+  default     = "instance-sg"
 }
 
 # Security Group for ALB
 variable "alb_sg_name" {
   description = "The name of the security group for the ALB."
   type        = string
-  # 기본값을 제거합니다.
+  default     = "alb-sg"
 }
 
 variable "vpc_id" {
@@ -123,4 +123,12 @@ variable "vpc_id" {
 variable "subnet_ids" {
   description = "The list of private subnet IDs for the EKS cluster."
   type        = list(string)
+}
+
+data "aws_caller_identity" "current" {}
+
+variable "account_id" {
+  description = "The AWS Account ID where the resources will be created."
+  type        = string
+  default     = data.aws_caller_identity.current.account_id
 }
