@@ -118,13 +118,13 @@ resource "aws_route_table" "private_rt_2" {
 
 # 프라이빗 서브넷 A - 프라이빗 RT 1 연결
 resource "aws_route_table_association" "private_rt_1_as_private_subnet_a" {
-  subnet_id      = aws_subnet.private-sub-a.id
+  subnet_id      = aws_subnet.private_sub_a.id
   route_table_id = aws_route_table.private_rt_1.id
 }
 
 # 프라이빗 서브넷 B - 프라이빗 RT 2 연결
 resource "aws_route_table_association" "private_rt_2_as_private_subnet_b" {
-  subnet_id      = aws_subnet.private-sub-b.id
+  subnet_id      = aws_subnet.private_sub_b.id
   route_table_id = aws_route_table.private_rt_2.id
 }
 
@@ -170,7 +170,7 @@ resource "aws_nat_gateway" "nat_gw_2" {
 resource "aws_launch_configuration" "TEST" {
   image_id        = "ami-07d737d4d8119ad79"
   instance_type   = var.instance_type
-  security_groups = [aws_security_group.instance.id]
+  security_groups = [aws_security_group.instance_sg.id]
   user_data       = data.template_file.user_data.rendered
 
   # 오토스케일링 그룹과 함께 시작 구성을 사용할 때 필요합니다.
@@ -228,7 +228,7 @@ resource "aws_lb" "alb" {
   name               = var.cluster_name
   load_balancer_type = "application"
   subnets            = [aws_subnet.public_subnet_a.id, aws_subnet.public_subnet_b.id]
-  security_groups    = [aws_security_group.alb.id]
+  security_groups    = [aws_security_group.alb_sg.id]
 
   tags = {
     Name = "TEST-ALB"
@@ -344,7 +344,7 @@ module "eks" {
     disk_size              = 10
     instance_types         = ["${var.instance_type}"]
     vpc_security_group_ids = []
-    iam_role_additional_policies = ["${var.iam_role_policy_prefix}/${module.iam_policy_autoscaling.name}"]
+    iam_role_additional_policies = ["${var.iam_role_policy_prefix}/${var.iam_policy_autoscaling}"]
   }
 
   eks_managed_node_groups = {

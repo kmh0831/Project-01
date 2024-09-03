@@ -2,6 +2,17 @@ provider "aws" {
   region = var.aws_region
 }
 
+# 백엔드 설정
+terraform {
+  backend "s3" {
+    bucket         = "terraform-state-bucket-kmhyuk0831"
+    key            = "path/to/your/terraform.tfstate"  # tfstate 파일 경로
+    region         = "ap-northeast-2"
+    dynamodb_table = "terraform-lock-table"
+    encrypt        = true
+  }
+}
+
 module "webserver_cluster" {
   source = "../modules/services/webserver-cluster"
   
@@ -28,7 +39,7 @@ provider "helm" {
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.webserver_cluster.cluster_id
+  name = module.webserver_cluster.eks_cluster_id
 }
 
 resource "helm_release" "cluster_autoscaler" {

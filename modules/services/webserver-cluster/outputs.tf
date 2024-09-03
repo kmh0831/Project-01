@@ -4,17 +4,17 @@ output "alb_dns_name" {
 }
 
 output "vpc_id" {
-  value = aws_vpc.main.id
+  value = aws_vpc.vpc.id
   description = "The ID of the VPC"
 }
 
 output "private_subnet_a_id" {
-  value = aws_subnet.private_subnet_a.id
+  value = aws_subnet.private_sub_a.id
   description = "The ID of the private subnet A"
 }
 
 output "private_subnet_b_id" {
-  value = aws_subnet.private_subnet_b.id
+  value = aws_subnet.private_sub_b.id
   description = "The ID of the private subnet B"
 }
 
