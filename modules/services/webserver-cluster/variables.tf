@@ -126,9 +126,3 @@ variable "subnet_ids" {
 }
 
 data "aws_caller_identity" "current" {}
-
-variable "account_id" {
-  description = "The AWS Account ID where the resources will be created."
-  type        = string
-  default     = data.aws_caller_identity.current.account_id
-}
