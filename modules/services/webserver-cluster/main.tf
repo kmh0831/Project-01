@@ -342,11 +342,12 @@ module "eks" {
   eks_managed_node_group_defaults = {
     ami_type               = "AL2_x86_64"
     disk_size              = 10
-    instance_types         = var.instance_type
+    instance_types         = [var.instance_type]
     vpc_security_group_ids = []
     iam_role_additional_policies = {
-      "policy1" = "${var.iam_role_policy_prefix}/${var.iam_policy_autoscaling}"
+      "policy1" = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${var.iam_policy_autoscaling}"
     }
+
   }
 
 
