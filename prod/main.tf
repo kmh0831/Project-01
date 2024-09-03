@@ -18,7 +18,7 @@ module "webserver_cluster" {
   
   cluster_name           = var.cluster_name
   cluster_version        = var.cluster_version
-  vpc_cidr_block               = "10.0.0.0/16"
+  vpc_cidr_block               = "10.1.0.0/16"
   private_subnet_a_cidr_block  = "10.1.3.0/24"
   private_subnet_b_cidr_block  = "10.1.4.0/24"
   availability_zone_a          = "ap-northeast-2a"
