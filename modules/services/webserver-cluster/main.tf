@@ -41,7 +41,7 @@ resource "aws_subnet" "public_subnet_b" {
 }
 
 # 프라이빗 서브넷 A
-resource "aws_subnet" "private-sub-a" {
+resource "aws_subnet" "private_sub_a" {
   vpc_id            = aws_vpc.vpc.id
   cidr_block        = "10.1.3.0/24"
   availability_zone = "ap-northeast-2a"
@@ -52,7 +52,7 @@ resource "aws_subnet" "private-sub-a" {
 }
 
 # 프라이빗 서브넷 B
-resource "aws_subnet" "private-sub-b" {
+resource "aws_subnet" "private_sub_b" {
   vpc_id            = aws_vpc.vpc.id
   cidr_block        = "10.1.4.0/24"
   availability_zone = "ap-northeast-2b"
@@ -284,7 +284,7 @@ resource "aws_lb_listener_rule" "asg" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.asg.arn
+    target_group_arn = aws_lb_target_group.target_group.arn
   }
 }
 
@@ -336,13 +336,13 @@ module "eks" {
   cluster_endpoint_private_access = true
   cluster_endpoint_public_access  = true
 
-  vpc_id          = module.vpc.vpc_id
-  subnet_ids      = module.vpc.private_subnets
+  vpc_id          = aws_vpc.vpc.id
+  subnet_ids      = [aws_subnet.public_subnet_a.id, aws_subnet.public_subnet_b.id]
   
   eks_managed_node_group_defaults = {
     ami_type               = "AL2_x86_64"
     disk_size              = 10
-    instance_types         = ["t2.small"]
+    instance_types         = ["${var.instance_type}"]
     vpc_security_group_ids = []
     iam_role_additional_policies = ["${var.iam_role_policy_prefix}/${module.iam_policy_autoscaling.name}"]
   }

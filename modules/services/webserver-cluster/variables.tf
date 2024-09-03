@@ -115,14 +115,4 @@ variable "alb_sg_name" {
   default     = "alb-sg"
 }
 
-variable "vpc_id" {
-  description = "The ID of the VPC where the EKS cluster and associated resources will be deployed."
-  type        = string
-}
-
-variable "subnet_ids" {
-  description = "The list of private subnet IDs for the EKS cluster."
-  type        = list(string)
-}
-
 data "aws_caller_identity" "current" {}

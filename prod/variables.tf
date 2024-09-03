@@ -19,24 +19,6 @@ variable "aws_region" {
   default     = "ap-northeast-2" # 필요에 따라 변경 가능
 }
 
-# VPC ID
-variable "vpc_id" {
-  description = "The ID of the VPC where the EKS cluster and associated resources will be deployed."
-  type        = string
-}
-
-# 서브넷 ID 목록
-variable "subnet_ids" {
-  description = "The list of private subnet IDs for the EKS cluster."
-  type        = list(string)
-}
-
-# AWS Account ID
-variable "account_id" {
-  description = "The AWS Account ID where the resources will be created."
-  type        = string
-}
-
 variable "iam_role_policy_prefix" {
   description = "The prefix for IAM role policies used by the cluster."
   type        = string
