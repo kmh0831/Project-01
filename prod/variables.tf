@@ -52,12 +52,10 @@ variable "iam_policy_autoscaling" {
 variable "instance_sg_name" {
   description = "The name of the security group for instances."
   type        = string
-  default     = "${var.cluster_name}-instance-sg"
 }
 
 variable "alb_sg_name" {
   description = "The name of the security group for the ALB."
   type        = string
-  default     = "${var.cluster_name}-alb-sg"
 }
 

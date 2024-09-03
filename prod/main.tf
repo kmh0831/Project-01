@@ -12,8 +12,8 @@ module "webserver_cluster" {
 
   iam_role_policy_prefix = var.iam_role_policy_prefix
   iam_policy_autoscaling = var.iam_policy_autoscaling
-  instance_sg_name       = var.instance_sg_name
-  alb_sg_name            = var.alb_sg_name
+  instance_sg_name       = "${var.cluster_name}-instance-sg"
+  alb_sg_name            = "${var.cluster_name}-alb-sg"
 }
 
 provider "helm" {

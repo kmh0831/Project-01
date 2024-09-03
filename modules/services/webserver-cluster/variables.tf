@@ -105,14 +105,14 @@ variable "ami_id" {
 variable "instance_sg_name" {
   description = "The name of the security group for instances."
   type        = string
-  default     = "${var.cluster_name}-instance"
+  # 기본값을 제거합니다.
 }
 
 # Security Group for ALB
 variable "alb_sg_name" {
   description = "The name of the security group for the ALB."
   type        = string
-  default     = "${var.cluster_name}-alb"
+  # 기본값을 제거합니다.
 }
 
 variable "vpc_id" {
