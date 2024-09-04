@@ -94,7 +94,7 @@ resource "aws_route_table" "private_rt_1" {
 
   route {
     cidr_block           = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat_gw_1.id
+    network_interface_id = aws_instance.nat_1.primary_network_interface_id
   }
 
   tags = {
@@ -108,7 +108,7 @@ resource "aws_route_table" "private_rt_2" {
 
   route {
     cidr_block           = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat_gw_2.id
+    network_interface_id = aws_instance.nat_1.primary_network_interface_id
   }
 
   tags = {
