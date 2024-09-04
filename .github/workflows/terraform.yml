@@ -56,3 +56,4 @@ jobs:
       if: ${{ failure() || steps.apply.outcome == 'failure' }}
       run: terraform destroy -auto-approve 
       working-directory: ./prod
+      
