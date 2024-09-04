@@ -224,7 +224,7 @@ resource "aws_security_group_rule" "allow_server_https_inbound" {
 }
 
 # SSH 인바운드 규칙
-resource "aws_security_group_rule" "allow_server_https_inbound" {
+resource "aws_security_group_rule" "allow_server_ssh_inbound" {
   type              = "ingress"
   security_group_id = aws_security_group.instance_sg.id
 
