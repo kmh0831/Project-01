@@ -19,28 +19,18 @@ output "private_subnet_c_id" {
 }
 
 output "eks_cluster_id" {
-  value = module.eks.cluster_id
+  value = aws_eks_cluster.demo.id
   description = "The ID of the EKS cluster"
 }
 
 output "eks_cluster_name" {
-  value       = module.eks.cluster_name
+  value       = aws_eks_cluster.demo.name
   description = "The name of the EKS cluster"
 }
 
 output "eks_cluster_endpoint" {
-  value = module.eks.cluster_endpoint
+  value = aws_eks_cluster.demo.endpoint
   description = "The endpoint of the EKS cluster"
-}
-
-output "eks_cluster_certificate_authority_data" {
-  value       = module.eks.cluster_certificate_authority_data
-  description = "The certificate authority data for the EKS cluster"
-}
-
-output "cluster_autoscaler_role_arn" {
-  value       = aws_iam_role.cluster_autoscaler.arn
-  description = "The ARN of the IAM role for the Cluster Autoscaler"
 }
 
 locals {
