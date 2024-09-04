@@ -44,9 +44,12 @@ jobs:
 
     - name: Terraform Init
       run: terraform init
+      working-directory: ./prod
 
     - name: Terraform Plan
       run: terraform plan -input=false -out=tfplan -no-color
+      working-directory: ./prod
       
     - name: Terraform Destroy 
       run: terraform destroy -auto-approve 
+      working-directory: ./prod
