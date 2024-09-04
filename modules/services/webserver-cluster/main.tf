@@ -174,24 +174,24 @@ resource "aws_instance" "nat_2" {
   }
 }
 
-# 시작 템플릿 
-resource "aws_launch_configuration" "TEST" {
-  image_id        = "ami-07d737d4d8119ad79"
-  instance_type   = var.instance_type
-  security_groups = [aws_security_group.instance_sg.id]
-  user_data       = data.template_file.user_data.rendered
+# # 시작 템플릿 
+# resource "aws_launch_configuration" "TEST" {
+#   image_id        = "ami-07d737d4d8119ad79"
+#   instance_type   = var.instance_type
+#   security_groups = [aws_security_group.instance_sg.id]
+#   user_data       = data.template_file.user_data.rendered
 
-  # 오토스케일링 그룹과 함께 시작 구성을 사용할 때 필요합니다.
-  # https://www.terraform.io/docs/providers/aws/r/launch_configuration.html
-  lifecycle {
-    create_before_destroy = true
-  }
-}
+#   # 오토스케일링 그룹과 함께 시작 구성을 사용할 때 필요합니다.
+#   # https://www.terraform.io/docs/providers/aws/r/launch_configuration.html
+#   lifecycle {
+#     create_before_destroy = true
+#   }
+# }
 
-# 시작 템플릿 유저데이터 데이터로 지정
-data "template_file" "user_data" {
-  template = file("${path.module}/user-data.sh")
-}
+# # 시작 템플릿 유저데이터 데이터로 지정
+# data "template_file" "user_data" {
+#   template = file("${path.module}/user-data.sh")
+# }
 
 # 인스턴스 보안 그룹
 resource "aws_security_group" "instance_sg" {
