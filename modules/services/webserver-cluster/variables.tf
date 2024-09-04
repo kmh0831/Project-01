@@ -88,10 +88,10 @@ variable "availability_zone_a" {
 }
 
 # Availability Zone B
-variable "availability_zone_b" {
+variable "availability_zone_c" {
   description = "The availability zone for subnet B."
   type        = string
-  default     = "ap-northeast-2b"
+  default     = "ap-northeast-2c"
 }
 
 # AMI ID

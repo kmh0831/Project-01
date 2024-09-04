@@ -22,7 +22,7 @@ module "webserver_cluster" {
   private_subnet_a_cidr_block  = "10.1.3.0/24"
   private_subnet_b_cidr_block  = "10.1.4.0/24"
   availability_zone_a          = "ap-northeast-2a"
-  availability_zone_b          = "ap-northeast-2b"
+  availability_zone_c          = "ap-northeast-2c"
 
   iam_role_policy_prefix = var.iam_role_policy_prefix
   iam_policy_autoscaling = var.iam_policy_autoscaling

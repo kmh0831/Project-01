@@ -22,7 +22,7 @@ resource "aws_internet_gateway" "igw" {
 resource "aws_subnet" "public_subnet_a" {
   vpc_id            = aws_vpc.vpc.id
   cidr_block        = var.public_subnet_a_cidr_block
-  availability_zone = "ap-northeast-2a"
+  availability_zone = var.availability_zone_a
   map_public_ip_on_launch = true
   tags = {
     Name = "Publict-sub-a"
@@ -32,8 +32,8 @@ resource "aws_subnet" "public_subnet_a" {
 # 퍼블릭 서브넷 B
 resource "aws_subnet" "public_subnet_b" {
   vpc_id            = aws_vpc.vpc.id
-  cidr_block        = "10.1.2.0/24"
-  availability_zone = "ap-northeast-2b"
+  cidr_block        = var.public_subnet_b_cidr_block
+  availability_zone = var.availability_zone_c
   map_public_ip_on_launch = true
   tags = {
     Name = "Publict-sub-b"
@@ -43,8 +43,8 @@ resource "aws_subnet" "public_subnet_b" {
 # 프라이빗 서브넷 A
 resource "aws_subnet" "private_sub_a" {
   vpc_id            = aws_vpc.vpc.id
-  cidr_block        = "10.1.3.0/24"
-  availability_zone = "ap-northeast-2a"
+  cidr_block        = var.private_subnet_a_cidr_block
+  availability_zone = var.availability_zone_a
 
   tags = {
     Name = "Private-sub-a"
@@ -54,8 +54,8 @@ resource "aws_subnet" "private_sub_a" {
 # 프라이빗 서브넷 B
 resource "aws_subnet" "private_sub_b" {
   vpc_id            = aws_vpc.vpc.id
-  cidr_block        = "10.1.4.0/24"
-  availability_zone = "ap-northeast-2b"
+  cidr_block        = var.private_subnet_b_cidr_block
+  availability_zone = var.availability_zone_c
 
   tags = {
     Name = "Private-sub-b"
@@ -93,7 +93,7 @@ resource "aws_route_table" "private_rt_1" {
   vpc_id = aws_vpc.vpc.id
 
   route {
-    cidr_block           = "0.0.0.0/0"
+    cidr_block           = local.all_ip
     network_interface_id = aws_instance.nat_1.primary_network_interface_id
   }
 
@@ -107,7 +107,7 @@ resource "aws_route_table" "private_rt_2" {
   vpc_id = aws_vpc.vpc.id
 
   route {
-    cidr_block           = "0.0.0.0/0"
+    cidr_block           = local.all_ip
     network_interface_id = aws_instance.nat_1.primary_network_interface_id
   }
 
