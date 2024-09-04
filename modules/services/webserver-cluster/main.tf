@@ -154,6 +154,7 @@ resource "aws_instance" "nat_1" {
   private_ip             = "10.1.1.100"
   vpc_security_group_ids = [aws_security_group.instance_sg.id]
   source_dest_check      = false
+  key_name = "team_seoul"
 
   tags = {
     Name = "Nat-1"
@@ -168,6 +169,7 @@ resource "aws_instance" "nat_2" {
   private_ip             = "10.1.2.100"
   vpc_security_group_ids = [aws_security_group.instance_sg.id]
   source_dest_check      = false
+  key_name = "team_seoul"
 
   tags = {
     Name = "Nat-2"
@@ -217,6 +219,17 @@ resource "aws_security_group_rule" "allow_server_https_inbound" {
 
   from_port   = var.server_port_https
   to_port     = var.server_port_https
+  protocol    = local.tcp_protocol
+  cidr_blocks = local.all_ips
+}
+
+# SSH 인바운드 규칙
+resource "aws_security_group_rule" "allow_server_https_inbound" {
+  type              = "ingress"
+  security_group_id = aws_security_group.instance_sg.id
+
+  from_port   = 22
+  to_port     = 22
   protocol    = local.tcp_protocol
   cidr_blocks = local.all_ips
 }

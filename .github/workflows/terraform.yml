@@ -42,15 +42,17 @@ jobs:
       with:
         terraform_version: 1.4.6  # 원하는 Terraform 버전으로 설정
 
-    - name: Terraform Init
-      run: terraform init
+    - name: Terraform Plan
+      run: terraform plan -input=false -out=tfplan -no-color
       working-directory: ./prod
-    
-    - name: Terraform Plan Destroy
-      run: terraform plan -destroy -out=tfdestroy -no-color
+      
+    - name: Terraform Apply
+      id: apply
+      continue-on-error: true
+      run: terraform apply -input=false -auto-approve tfplan
       working-directory: ./prod
-
-    - name: Terraform Destroy
-      if: github.ref == 'refs/heads/destroy' && github.event_name == 'push'
-      run: terraform destroy -auto-approve -input=false
+      
+    - name: Terraform Destroy on Failure
+      if: ${{ failure() || steps.apply.outcome == 'failure' }}
+      run: terraform destroy -auto-approve 
       working-directory: ./prod
