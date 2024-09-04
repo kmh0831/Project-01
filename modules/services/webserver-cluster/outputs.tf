@@ -39,6 +39,6 @@ output "eks_cluster_certificate_authority_data" {
 }
 
 output "cluster_autoscaler_role_arn" {
-  value       = aws_iam_role.cluster_autoscaler_role.arn
+  value       = aws_iam_role.cluster_autoscaler.arn
   description = "The ARN of the IAM role for the Cluster Autoscaler"
 }
