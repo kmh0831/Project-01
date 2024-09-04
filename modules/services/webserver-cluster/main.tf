@@ -367,7 +367,7 @@ resource "aws_security_group" "eks_sg" {
 }
 
 # 아웃바운드 규칙
-resource "aws_security_group_rule" "allow_all_outbound" {
+resource "aws_security_group_rule" "allow_all_outbound_eks" {
   type              = "egress"
   security_group_id = aws_security_group.eks_sg.id
 
