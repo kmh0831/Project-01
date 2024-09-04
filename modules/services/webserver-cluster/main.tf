@@ -362,7 +362,7 @@ resource "aws_iam_role_policy_attachment" "demo-cluster-AmazonEKSVPCResourceCont
 
 # EKS 보안그룹
 resource "aws_security_group" "eks_sg" {
-  name = var.alb_sg_name
+  name = "eks_sg"
   vpc_id = aws_vpc.vpc.id
 }
 
