@@ -336,7 +336,7 @@ module "eks" {
   cluster_version = var.cluster_version
 
   cluster_endpoint_private_access = true
-  cluster_endpoint_public_access  = false
+  cluster_endpoint_public_access  = true
 
   vpc_id          = aws_vpc.vpc.id
   subnet_ids      = [aws_subnet.public_subnet_a.id, aws_subnet.public_subnet_b.id]
