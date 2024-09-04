@@ -146,23 +146,31 @@ resource "aws_eip" "nat_eip_2" {
   }
 }
 
-# NAT 게이트웨이 1
-resource "aws_nat_gateway" "nat_gw_1" {
-  allocation_id = aws_eip.nat_eip_1.id
-  subnet_id     = aws_subnet.public_subnet_a.id
+# NAT EC2 1 인스턴스 생성
+resource "aws_instance" "nat_1" {
+  ami                    = "ami-0c2d3e23e757b5d84" # AWS 리전에 따라 적절한 AMI ID로 변경하세요.
+  instance_type          = "t2.micro"
+  subnet_id              = aws_subnet.public_subnet_a.id
+  private_ip             = "10.1.1.100"
+  vpc_security_group_ids = [aws_security_group.instance_sg.id]
+  source_dest_check      = false
 
   tags = {
-    Name = "Nat-gateway-1"
+    Name = "Nat-1"
   }
 }
 
-# NAT 게이트웨이 2
-resource "aws_nat_gateway" "nat_gw_2" {
-  allocation_id = aws_eip.nat_eip_2.id
-  subnet_id     = aws_subnet.public_subnet_b.id
+# NAT EC2 2 인스턴스 생성
+resource "aws_instance" "nat_2" {
+  ami                    = "ami-0c2d3e23e757b5d84" # AWS 리전에 따라 적절한 AMI ID로 변경하세요.
+  instance_type          = "t2.micro"
+  subnet_id              = aws_subnet.public_subnet_b.id
+  private_ip             = "10.1.2.100"
+  vpc_security_group_ids = [aws_security_group.instance_sg.id]
+  source_dest_check      = false
 
   tags = {
-    Name = "Nat-gateway-2"
+    Name = "Nat-2"
   }
 }
 
