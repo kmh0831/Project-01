@@ -337,50 +337,117 @@ resource "aws_security_group_rule" "allow_all_outbound" {
 }
 
 # EKS 클러스터 생성
-module "eks" {
-  source = "terraform-aws-modules/eks/aws"
+resource "aws_eks_cluster" "example" {
+  name     = "example-eks-cluster"
+  role_arn = aws_iam_role.eks_cluster_role.arn
 
-  cluster_name    = var.cluster_name
-  cluster_version = var.cluster_version
-
-  cluster_endpoint_private_access = true
-  cluster_endpoint_public_access  = true
-
-  vpc_id          = aws_vpc.vpc.id
-  subnet_ids      = [aws_subnet.public_subnet_a.id, aws_subnet.public_subnet_b.id]
-  
-  eks_managed_node_group_defaults = {
-    ami_type               = "AL2_x86_64"
-    disk_size              = 10
-    instance_types         = [var.instance_type]
-    vpc_security_group_ids = []
-    iam_role_additional_policies = {
-      "policy1" = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${var.iam_policy_autoscaling}"
-    }
-
-  }
-
-
-  eks_managed_node_groups = {
-    ("${var.cluster_name}-node-group") = {
-      min_size     = 2
-      max_size     = 3
-      desired_size = 2
-
-      labels = {
-        ondemand = "true"
-      }
-
-      tags = {
-        "k8s.io/cluster-autoscaler/enabled" : "true"
-        "k8s.io/cluster-autoscaler/${var.cluster_name}" : "true"
-      }
-    }
+  vpc_config {
+    subnet_ids = [aws_subnet.private_sub_a.id, aws_subnet.private_sub_b.id]
   }
 }
 
-# Cluster Autoscaler에 필요한 IAM 역할 및 정책 생성
-resource "aws_iam_role" "cluster_autoscaler" {
+# 클러스터에 필요한 IAM 역할
+resource "aws_iam_role" "eks_cluster_role" {
+  name = "example-eks-cluster-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal = {
+          Service = "eks.amazonaws.com"
+        }
+      },
+    ],
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
+  role       = aws_iam_role.eks_cluster_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "eks_service_policy" {
+  role       = aws_iam_role.eks_cluster_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
+}
+
+# EKS 노드 그룹에 대한 IAM 역할 및 정책
+resource "aws_iam_role" "eks_node_group_role" {
+  name = "example-eks-node-group-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      },
+    ],
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "eks_worker_node_policy" {
+  role       = aws_iam_role.eks_node_group_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "eks_cni_policy" {
+  role       = aws_iam_role.eks_node_group_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+}
+
+resource "aws_iam_role_policy_attachment" "eks_ec2_container_registry_policy" {
+  role       = aws_iam_role.eks_node_group_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+}
+
+# EKS 노드 그룹
+resource "aws_eks_node_group" "example" {
+  cluster_name    = aws_eks_cluster.example.name
+  node_group_name = "example-node-group"
+  node_role_arn   = aws_iam_role.eks_node_group_role.arn
+  subnet_ids      = [aws_subnet.private_sub_a.id, aws_subnet.private_sub_b.id]
+
+  scaling_config {
+    desired_size = 2
+    max_size     = 3
+    min_size     = 1
+  }
+
+  instance_types = ["t3.small"]
+
+  remote_access {
+    ec2_ssh_key = "team_seoul"
+  }
+}
+
+# OIDC 공급자 설정 (IRSA용)
+data "aws_eks_cluster" "example" {
+  name = aws_eks_cluster.example.name
+}
+
+data "aws_eks_cluster_auth" "example" {
+  name = aws_eks_cluster.example.name
+}
+
+resource "aws_iam_openid_connect_provider" "eks" {
+  url = data.aws_eks_cluster.example.identity[0].oidc.issuer
+
+  client_id_list = ["sts.amazonaws.com"]
+
+  thumbprint_list = [
+    data.aws_eks_cluster_auth.example.cluster_certificate_authority[0].data
+  ]
+}
+
+# Cluster Autoscaler용 IAM 역할 및 정책
+resource "aws_iam_role" "cluster_autoscaler_role" {
   name = "eks-cluster-autoscaler-role"
 
   assume_role_policy = jsonencode({
@@ -389,57 +456,59 @@ resource "aws_iam_role" "cluster_autoscaler" {
       {
         Effect = "Allow",
         Principal = {
-          Service = "ec2.amazonaws.com"
+          Federated = aws_iam_openid_connect_provider.eks.arn
         },
-        Action = "sts:AssumeRole"
-      },
-      {
-        Effect = "Allow",
-        Principal = {
-          Service = "eks.amazonaws.com"
-        },
-        Action = "sts:AssumeRole"
+        Action = "sts:AssumeRoleWithWebIdentity",
+        Condition = {
+          "StringEquals" : {
+            "${replace(data.aws_eks_cluster.example.identity[0].oidc.issuer, "https://", "")}:sub" : "system:serviceaccount:kube-system:cluster-autoscaler"
+          }
+        }
       }
     ]
   })
 }
 
+# 사용자 정의 정책 (필요한 권한 정의)
 resource "aws_iam_policy" "cluster_autoscaler_policy" {
   name        = "eks-cluster-autoscaler-policy"
-  description = "IAM policy for EKS Cluster Autoscaler"
+  description = "Policy for EKS Cluster Autoscaler to manage EC2 and ASG"
 
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
       {
-        Effect = "Allow",
-        Action = [
-          "autoscaling:SetDesiredCapacity",
-          "autoscaling:TerminateInstanceInAutoScalingGroup",
-          "autoscaling:UpdateAutoScalingGroup",
+        Effect   = "Allow",
+        Action   = [
           "autoscaling:DescribeAutoScalingGroups",
           "autoscaling:DescribeAutoScalingInstances",
-          "autoscaling:DescribeTags",
           "autoscaling:DescribeLaunchConfigurations",
-          "autoscaling:DescribeScalingActivities",
+          "autoscaling:DescribeTags",
+          "autoscaling:SetDesiredCapacity",
           "autoscaling:TerminateInstanceInAutoScalingGroup",
-          "autoscaling:UpdateAutoScalingGroup",
-          "ec2:DescribeLaunchTemplateVersions",
-          "ec2:DescribeInstanceTypes",
-          "ec2:DescribeInstances",
-          "ec2:DescribeImages",
-          "eks:DescribeNodegroup",
-          "eks:DescribeCluster"
+          "ec2:DescribeLaunchTemplateVersions"
         ],
         Resource = "*"
-      }
-    ]
+      },
+    ],
   })
 }
 
-resource "aws_iam_role_policy_attachment" "attach_cluster_autoscaler_policy" {
-  role       = aws_iam_role.cluster_autoscaler.name
+# 사용자 정의 정책을 IAM 역할에 부착
+resource "aws_iam_role_policy_attachment" "cluster_autoscaler_custom_policy_attachment" {
+  role       = aws_iam_role.cluster_autoscaler_role.name
   policy_arn = aws_iam_policy.cluster_autoscaler_policy.arn
+}
+
+# Cluster Autoscaler 서비스 계정 생성 및 IAM 역할 연결
+resource "kubernetes_service_account" "cluster_autoscaler" {
+  metadata {
+    name      = "cluster-autoscaler"
+    namespace = "kube-system"
+    annotations = {
+      "eks.amazonaws.com/role-arn" = aws_iam_role.cluster_autoscaler_role.arn
+    }
+  }
 }
 
 
