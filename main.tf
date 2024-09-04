@@ -1,3 +1,7 @@
+provider "aws" {
+  region = "ap-northeast-2"  # 리소스가 배포된 AWS 리전을 입력
+}
+
 # 백엔드 설정
 terraform {
   backend "s3" {
