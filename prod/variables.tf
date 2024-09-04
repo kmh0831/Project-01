@@ -9,7 +9,7 @@ variable "cluster_name" {
 variable "cluster_version" {
   description = "The version of the EKS cluster."
   type        = string
-  default     = "1.27" # EKS 클러스터의 기본 버전 (필요에 따라 변경 가능)
+  default     = "1.30" # EKS 클러스터의 기본 버전 (필요에 따라 변경 가능)
 }
 
 # AWS 리전

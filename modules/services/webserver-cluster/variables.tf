@@ -1,3 +1,8 @@
+variable "aws_region" {
+  type        = string
+  default = "ap-northeast-2"
+}
+
 # VPC CIDR Block
 variable "vpc_cidr_block" {
   description = "The CIDR block for the VPC."
@@ -12,8 +17,8 @@ variable "public_subnet_a_cidr_block" {
   default     = "10.1.1.0/24"
 }
 
-# 퍼블릭 서브넷 B CIDR Block
-variable "public_subnet_b_cidr_block" {
+# 퍼블릭 서브넷 C CIDR Block
+variable "public_subnet_c_cidr_block" {
   description = "The CIDR block for the public subnet B."
   type        = string
   default     = "10.1.2.0/24"
@@ -26,8 +31,8 @@ variable "private_subnet_a_cidr_block" {
   default     = "10.1.3.0/24"
 }
 
-# 프라이빗 서브넷 B CIDR Block
-variable "private_subnet_b_cidr_block" {
+# 프라이빗 서브넷 C CIDR Block
+variable "private_subnet_c_cidr_block" {
   description = "The CIDR block for the private subnet B."
   type        = string
   default     = "10.1.4.0/24"
@@ -44,7 +49,7 @@ variable "cluster_name" {
 variable "cluster_version" {
   description = "The version of the EKS cluster."
   type        = string
-  default     = "1.27" # EKS 클러스터의 기본 버전
+  default     = "1.30" # EKS 클러스터의 기본 버전
 }
 
 # 인스턴스 타입
