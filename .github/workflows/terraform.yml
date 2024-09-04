@@ -42,6 +42,10 @@ jobs:
       with:
         terraform_version: 1.4.6  # 원하는 Terraform 버전으로 설정
 
+    - name: Terraform Init
+      run: terraform init
+      working-directory: ./prod
+
     - name: Terraform Plan
       run: terraform plan -input=false -out=tfplan -no-color
       working-directory: ./prod
@@ -56,4 +60,3 @@ jobs:
       if: ${{ failure() || steps.apply.outcome == 'failure' }}
       run: terraform destroy -auto-approve 
       working-directory: ./prod
-      
