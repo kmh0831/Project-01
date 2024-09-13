@@ -176,6 +176,21 @@ resource "aws_instance" "nat_2" {
   }
 }
 
+# 배스쳔 EC2 2 인스턴스 생성
+resource "aws_instance" "ec2_test" {
+  ami                    = "ami-0c0dea96ae6850ced" # AWS 리전에 따라 적절한 AMI ID로 변경하세요.
+  instance_type          = "t2.micro"
+  subnet_id              = aws_subnet.public_subnet_c.id
+  private_ip             = "10.1.2.200"
+  vpc_security_group_ids = [aws_security_group.instance_sg.id]
+  source_dest_check      = false
+  key_name = "team_seoul"
+
+  tags = {
+    Name = "EC2-TEST"
+  }
+}
+
 # 인스턴스 보안 그룹
 resource "aws_security_group" "instance_sg" {
   name = var.instance_sg_name
