@@ -7,7 +7,7 @@ resource "aws_vpc" "vpc" {
   tags = {
     Name = "Project-vpc"
   }
-}
+} 
 
 # 인터넷게이트웨이
 resource "aws_internet_gateway" "igw" {
