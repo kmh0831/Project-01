@@ -399,7 +399,7 @@ resource "aws_eks_cluster" "demo" {
 
   vpc_config {
     security_group_ids = [aws_security_group.eks_sg.id]
-    subnet_ids         = [aws_subnet.public_subnet_a.id, aws_subnet.public_subnet_c.id]
+    subnet_ids         = [aws_subnet.private_sub_a.id, aws_subnet.private_sub_c.id]
   }
 
   depends_on = [
@@ -447,7 +447,7 @@ resource "aws_eks_node_group" "demo" {
   cluster_name    = aws_eks_cluster.demo.name
   node_group_name = "TEST-node-group"
   node_role_arn   = aws_iam_role.demo-node.arn
-  subnet_ids      = [aws_subnet.public_subnet_a.id, aws_subnet.public_subnet_c.id]
+  subnet_ids      = [aws_subnet.private_sub_a.id, aws_subnet.private_sub_c.id]
   instance_types  = [ "t3.small" ]
 
   scaling_config {
