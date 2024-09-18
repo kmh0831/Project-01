@@ -7,7 +7,7 @@ resource "aws_vpc" "vpc" {
   tags = {
     Name = "Project-vpc"
   }
-} 
+}
 
 # 인터넷게이트웨이
 resource "aws_internet_gateway" "igw" {
@@ -173,6 +173,21 @@ resource "aws_instance" "nat_2" {
 
   tags = {
     Name = "Nat-2"
+  }
+}
+
+# 배스쳔 EC2 인스턴스 생성
+resource "aws_instance" "ec2_test" {
+  ami                    = "ami-0c0dea96ae6850ced" # AWS 리전에 따라 적절한 AMI ID로 변경하세요.
+  instance_type          = "t2.micro"
+  subnet_id              = aws_subnet.public_subnet_c.id
+  private_ip             = "10.1.2.200"
+  vpc_security_group_ids = [aws_security_group.instance_sg.id]
+  source_dest_check      = false
+  key_name = "team_seoul"
+
+  tags = {
+    Name = "EC2-TEST"
   }
 }
 
@@ -384,7 +399,7 @@ resource "aws_eks_cluster" "demo" {
 
   vpc_config {
     security_group_ids = [aws_security_group.eks_sg.id]
-    subnet_ids         = [aws_subnet.public_subnet_a.id, aws_subnet.public_subnet_c.id]
+    subnet_ids         = [aws_subnet.private_sub_a.id, aws_subnet.private_sub_c.id]
   }
 
   depends_on = [
@@ -432,7 +447,7 @@ resource "aws_eks_node_group" "demo" {
   cluster_name    = aws_eks_cluster.demo.name
   node_group_name = "TEST-node-group"
   node_role_arn   = aws_iam_role.demo-node.arn
-  subnet_ids      = [aws_subnet.public_subnet_a.id, aws_subnet.public_subnet_c.id]
+  subnet_ids      = [aws_subnet.private_sub_a.id, aws_subnet.private_sub_c.id]
   instance_types  = [ "t3.small" ]
 
   scaling_config {
