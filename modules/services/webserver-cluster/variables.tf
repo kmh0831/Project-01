@@ -99,13 +99,6 @@ variable "availability_zone_c" {
   default     = "ap-northeast-2c"
 }
 
-# # AMI ID
-# variable "ami_id" {
-#   description = "The AMI ID for the launch configuration."
-#   type        = string
-#   default     = "ami-07d737d4d8119ad79"
-# }
-
 # Security Group for Instances
 variable "instance_sg_name" {
   description = "The name of the security group for instances."
